@@ -1,5 +1,5 @@
-
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -153,9 +153,11 @@ const PropertyGrid = () => {
                 <Button className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
                   Invest Now
                 </Button>
-                <Button variant="outline" className="px-4">
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
+                <Link to={`/property/${property.id}`}>
+                  <Button variant="outline" className="px-4">
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </CardContent>
