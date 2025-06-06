@@ -6,8 +6,16 @@ import { ArrowRight, Play, TrendingUp, Shield, Users } from 'lucide-react';
 const Hero = () => {
   return (
     <section className="relative py-20 overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 opacity-90" />
+      {/* Real Estate Background */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1497604401993-f2e922e5cb0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')`
+        }}
+      />
+      
+      {/* Background gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-purple-600/90 to-indigo-800/90" />
       
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-10">
@@ -22,7 +30,7 @@ const Hero = () => {
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
             Invest in
             <span className="block bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-              Amaravathi's Future
+              Amaravati's Future
             </span>
             Through Tokens
           </h1>

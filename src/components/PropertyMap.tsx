@@ -65,7 +65,7 @@ const PropertyMap = ({ coordinates, title }: PropertyMapProps) => {
             <h4 className="font-medium text-gray-900 mb-3">Nearby Landmarks</h4>
             <div className="space-y-2">
               {[
-                { name: "Amaravathi Government Complex", distance: "1.2 km", type: "Government" },
+                { name: "Amaravati Government Complex", distance: "1.2 km", type: "Government" },
                 { name: "Capital Region Development Authority", distance: "800 m", type: "Office" },
                 { name: "Vijayawada Airport", distance: "15 km", type: "Transport" },
                 { name: "Proposed Metro Station", distance: "500 m", type: "Transport" }
