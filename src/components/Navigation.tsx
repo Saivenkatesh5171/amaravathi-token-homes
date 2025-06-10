@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -13,12 +12,16 @@ import {
 } from '@/components/ui/dropdown-menu';
 import WalletConnectModal from './WalletConnectModal';
 import ProfileModal from './ProfileModal';
+import AuthModal from './AuthModal';
+import LegalRightsModal from './LegalRightsModal';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showWalletModal, setShowWalletModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showLegalModal, setShowLegalModal] = useState(false);
   const [userProfile, setUserProfile] = useState({
     name: 'John Doe',
     email: 'john.doe@example.com',
@@ -27,7 +30,7 @@ const Navigation = () => {
   });
 
   const handleSignIn = () => {
-    setShowWalletModal(true);
+    setShowAuthModal(true);
   };
 
   const handleSignOut = () => {
@@ -90,6 +93,15 @@ const Navigation = () => {
 
             {/* Desktop CTA */}
             <div className="hidden md:flex items-center space-x-4">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setShowLegalModal(true)}
+                className="border-purple-600 text-purple-600 hover:bg-purple-50"
+              >
+                Legal Rights
+              </Button>
+              
               {!isSignedIn && (
                 <Button 
                   variant="outline" 
@@ -198,6 +210,15 @@ const Navigation = () => {
                   About
                 </Link>
                 <div className="flex flex-col space-y-2 px-4 pt-4 border-t border-gray-200">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => setShowLegalModal(true)}
+                    className="justify-start"
+                  >
+                    Legal Rights
+                  </Button>
+                  
                   {!isSignedIn ? (
                     <>
                       <Button 
@@ -270,12 +291,28 @@ const Navigation = () => {
         onConnected={handleWalletConnected}
       />
 
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onAuthenticated={(userData) => {
+          setUserProfile(userData);
+          setIsSignedIn(true);
+        }}
+      />
+
       {/* Profile Modal */}
       <ProfileModal
         isOpen={showProfileModal}
         onClose={() => setShowProfileModal(false)}
         userProfile={userProfile}
         onUpdateProfile={handleProfileUpdate}
+      />
+
+      {/* Legal Rights Modal */}
+      <LegalRightsModal
+        isOpen={showLegalModal}
+        onClose={() => setShowLegalModal(false)}
       />
     </>
   );

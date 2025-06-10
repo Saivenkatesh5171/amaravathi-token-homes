@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -23,6 +22,9 @@ import {
 import Navigation from '@/components/Navigation';
 import PropertyMap from '@/components/PropertyMap';
 import RentalBooking from '@/components/RentalBooking';
+import GoogleMapsRoute from '@/components/GoogleMapsRoute';
+import InvestmentModal from '@/components/InvestmentModal';
+import LegalRightsModal from '@/components/LegalRightsModal';
 
 const PropertyDetail = () => {
   const { id } = useParams();

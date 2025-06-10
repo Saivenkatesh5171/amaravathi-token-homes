@@ -1,10 +1,26 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, TrendingUp, Users, Calendar, ArrowRight, Star, Heart, Share2, Clock, Shield, Zap } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { 
+  MapPin, 
+  TrendingUp, 
+  Users, 
+  Calendar, 
+  ArrowRight, 
+  Star,
+  Grid3X3,
+  List,
+  Filter,
+  Search,
+  Shield,
+  Flame,
+  Award
+} from 'lucide-react';
+import InvestmentModal from './InvestmentModal';
 
 const PropertyGrid = () => {
   const properties = [
