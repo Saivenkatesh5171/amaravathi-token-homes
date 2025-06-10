@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Menu, X, Home, TrendingUp, User, Wallet, Settings, LogOut } from 'lucide-react';
 import {
   DropdownMenu,
@@ -11,22 +12,49 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import WalletConnectModal from './WalletConnectModal';
+import ProfileModal from './ProfileModal';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showWalletModal, setShowWalletModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [userProfile, setUserProfile] = useState({
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    phone: '+91 98765 43210',
+    avatar: ''
+  });
 
   const handleSignIn = () => {
-    setIsSignedIn(true);
+    setShowWalletModal(true);
   };
 
   const handleSignOut = () => {
     setIsSignedIn(false);
+    setUserProfile({
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+      phone: '+91 98765 43210',
+      avatar: ''
+    });
   };
 
   const handleConnectWallet = () => {
     setShowWalletModal(true);
+  };
+
+  const handleWalletConnected = () => {
+    setIsSignedIn(true);
+    setShowWalletModal(false);
+  };
+
+  const handleProfileUpdate = (updatedProfile: any) => {
+    setUserProfile(updatedProfile);
+  };
+
+  const handleProfileClick = () => {
+    setShowProfileModal(true);
   };
 
   return (
@@ -62,15 +90,17 @@ const Navigation = () => {
 
             {/* Desktop CTA */}
             <div className="hidden md:flex items-center space-x-4">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="border-blue-600 text-blue-600 hover:bg-blue-50"
-                onClick={handleConnectWallet}
-              >
-                <Wallet className="h-4 w-4 mr-2" />
-                Connect Wallet
-              </Button>
+              {!isSignedIn && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-blue-600 text-blue-600 hover:bg-blue-50"
+                  onClick={handleConnectWallet}
+                >
+                  <Wallet className="h-4 w-4 mr-2" />
+                  Connect Wallet
+                </Button>
+              )}
               
               {!isSignedIn ? (
                 <Button 
@@ -85,21 +115,30 @@ const Navigation = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
-                      size="sm" 
-                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                      variant="ghost"
+                      className="flex items-center space-x-2 hover:bg-gray-100"
                     >
-                      <User className="h-4 w-4 mr-2" />
-                      Profile
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={userProfile.avatar} alt="Profile" />
+                        <AvatarFallback>
+                          {userProfile.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="hidden lg:block">{userProfile.name}</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleProfileClick}>
                       <User className="h-4 w-4 mr-2" />
                       My Profile
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <TrendingUp className="h-4 w-4 mr-2" />
                       My Investments
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Wallet className="h-4 w-4 mr-2" />
+                      Wallet
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Settings className="h-4 w-4 mr-2" />
@@ -159,33 +198,48 @@ const Navigation = () => {
                   About
                 </Link>
                 <div className="flex flex-col space-y-2 px-4 pt-4 border-t border-gray-200">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="border-blue-600 text-blue-600 hover:bg-blue-50"
-                    onClick={handleConnectWallet}
-                  >
-                    <Wallet className="h-4 w-4 mr-2" />
-                    Connect Wallet
-                  </Button>
                   {!isSignedIn ? (
-                    <Button 
-                      size="sm" 
-                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                      onClick={handleSignIn}
-                    >
-                      <User className="h-4 w-4 mr-2" />
-                      Sign In
-                    </Button>
+                    <>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="border-blue-600 text-blue-600 hover:bg-blue-50"
+                        onClick={handleConnectWallet}
+                      >
+                        <Wallet className="h-4 w-4 mr-2" />
+                        Connect Wallet
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                        onClick={handleSignIn}
+                      >
+                        <User className="h-4 w-4 mr-2" />
+                        Sign In
+                      </Button>
+                    </>
                   ) : (
                     <div className="flex flex-col space-y-2">
-                      <Button variant="ghost" size="sm" className="justify-start">
+                      <div className="flex items-center space-x-2 px-2 py-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={userProfile.avatar} alt="Profile" />
+                          <AvatarFallback>
+                            {userProfile.name.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium">{userProfile.name}</span>
+                      </div>
+                      <Button variant="ghost" size="sm" className="justify-start" onClick={handleProfileClick}>
                         <User className="h-4 w-4 mr-2" />
                         My Profile
                       </Button>
                       <Button variant="ghost" size="sm" className="justify-start">
                         <TrendingUp className="h-4 w-4 mr-2" />
                         My Investments
+                      </Button>
+                      <Button variant="ghost" size="sm" className="justify-start">
+                        <Wallet className="h-4 w-4 mr-2" />
+                        Wallet
                       </Button>
                       <Button variant="ghost" size="sm" className="justify-start">
                         <Settings className="h-4 w-4 mr-2" />
@@ -212,7 +266,16 @@ const Navigation = () => {
       {/* Wallet Connect Modal */}
       <WalletConnectModal 
         isOpen={showWalletModal} 
-        onClose={() => setShowWalletModal(false)} 
+        onClose={() => setShowWalletModal(false)}
+        onConnected={handleWalletConnected}
+      />
+
+      {/* Profile Modal */}
+      <ProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+        userProfile={userProfile}
+        onUpdateProfile={handleProfileUpdate}
       />
     </>
   );

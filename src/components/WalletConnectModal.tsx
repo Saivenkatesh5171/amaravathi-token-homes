@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -7,9 +6,10 @@ import { X, Wallet, Mail, Chrome, Facebook, Twitter, MessageCircle, Apple, Insta
 interface WalletConnectModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onConnected?: () => void;
 }
 
-const WalletConnectModal: React.FC<WalletConnectModalProps> = ({ isOpen, onClose }) => {
+const WalletConnectModal: React.FC<WalletConnectModalProps> = ({ isOpen, onClose, onConnected }) => {
   const [isConnecting, setIsConnecting] = useState<string | null>(null);
 
   const handleWalletConnect = async (walletType: string) => {
@@ -20,6 +20,7 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({ isOpen, onClose
       // Simulate connection process
       await new Promise(resolve => setTimeout(resolve, 2000));
       console.log(`Connected to ${walletType} successfully`);
+      onConnected?.();
       onClose();
     } catch (error) {
       console.error(`Failed to connect to ${walletType}:`, error);
@@ -36,6 +37,7 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({ isOpen, onClose
       // Simulate social login process
       await new Promise(resolve => setTimeout(resolve, 1500));
       console.log(`Logged in with ${provider} successfully`);
+      onConnected?.();
       onClose();
     } catch (error) {
       console.error(`Failed to login with ${provider}:`, error);
