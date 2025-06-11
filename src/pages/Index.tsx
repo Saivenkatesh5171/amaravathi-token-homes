@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,8 +9,29 @@ import PropertyGrid from '@/components/PropertyGrid';
 import StatsSection from '@/components/StatsSection';
 import HowItWorks from '@/components/HowItWorks';
 import Navigation from '@/components/Navigation';
+import CustomerCare from '@/components/CustomerCare';
+import SecurityAccess from '@/components/SecurityAccess';
 
 const Index = () => {
+  const [hasAccess, setHasAccess] = useState(false);
+
+  useEffect(() => {
+    // Check if user has already been granted access
+    const accessGranted = localStorage.getItem('siteAccess');
+    if (accessGranted === 'granted') {
+      setHasAccess(true);
+    }
+  }, []);
+
+  const handleAccessGranted = () => {
+    setHasAccess(true);
+  };
+
+  // Show security access screen if not authenticated
+  if (!hasAccess) {
+    return <SecurityAccess onAccessGranted={handleAccessGranted} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 relative">
       {/* Buddha Statue Wallpaper Background */}
@@ -57,6 +77,9 @@ const Index = () => {
             </div>
           </div>
         </section>
+
+        {/* Customer Care Section */}
+        <CustomerCare />
 
         {/* Benefits Section */}
         <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
