@@ -11,6 +11,7 @@ import HowItWorks from '@/components/HowItWorks';
 import Navigation from '@/components/Navigation';
 import CustomerCare from '@/components/CustomerCare';
 import SecurityAccess from '@/components/SecurityAccess';
+import DemoVideo from '@/components/DemoVideo';
 
 const Index = () => {
   const [hasAccess, setHasAccess] = useState(false);
@@ -48,6 +49,9 @@ const Index = () => {
         
         {/* Stats Section */}
         <StatsSection />
+
+        {/* Demo Video Section */}
+        <DemoVideo />
         
         {/* How It Works */}
         <HowItWorks />
