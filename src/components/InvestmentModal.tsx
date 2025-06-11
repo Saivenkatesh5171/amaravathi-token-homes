@@ -5,37 +5,46 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { X, TrendingUp, Calculator, CreditCard, Wallet, Shield } from 'lucide-react';
+import { X, Wallet, TrendingUp, Shield, Calculator, CreditCard } from 'lucide-react';
 
 interface InvestmentModalProps {
   isOpen: boolean;
   onClose: () => void;
   property: {
+    id: number;
     title: string;
     tokenPrice: string;
-    totalTokens: string;
     availableTokens: string;
     expectedReturn: string;
+    price: string;
   };
 }
 
 const InvestmentModal: React.FC<InvestmentModalProps> = ({ isOpen, onClose, property }) => {
-  const [tokenAmount, setTokenAmount] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('wallet');
+  const [investmentAmount, setInvestmentAmount] = useState('');
+  const [selectedTokens, setSelectedTokens] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const tokenPrice = 250;
-  const investmentAmount = parseInt(tokenAmount) * tokenPrice || 0;
-  const estimatedReturn = investmentAmount * 0.165;
+  const tokenPrice = parseInt(property.tokenPrice.replace('₹', ''));
+  const maxTokens = parseInt(property.availableTokens.replace(',', ''));
+
+  const handleAmountChange = (amount: string) => {
+    setInvestmentAmount(amount);
+    const tokens = Math.floor(parseInt(amount) / tokenPrice);
+    setSelectedTokens(Math.min(tokens, maxTokens));
+  };
+
+  const handleTokenChange = (tokens: number) => {
+    setSelectedTokens(Math.min(tokens, maxTokens));
+    setInvestmentAmount((tokens * tokenPrice).toString());
+  };
 
   const handleInvest = async () => {
     setIsProcessing(true);
-    
     try {
       // Simulate investment processing
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      alert(`Successfully invested ₹${investmentAmount.toLocaleString()} in ${tokenAmount} tokens!`);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log(`Investment successful: ${selectedTokens} tokens for ₹${investmentAmount}`);
       onClose();
     } catch (error) {
       console.error('Investment failed:', error);
@@ -48,8 +57,7 @@ const InvestmentModal: React.FC<InvestmentModalProps> = ({ isOpen, onClose, prop
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-center text-xl font-bold flex items-center justify-center gap-2">
-            <TrendingUp className="h-5 w-5 text-green-500" />
+          <DialogTitle className="text-center text-xl font-bold">
             Invest in {property.title}
           </DialogTitle>
           <button
@@ -66,106 +74,116 @@ const InvestmentModal: React.FC<InvestmentModalProps> = ({ isOpen, onClose, prop
             <h3 className="font-semibold text-blue-900 mb-2">{property.title}</h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="text-blue-600">Token Price:</span>
-                <p className="font-semibold">{property.tokenPrice}</p>
+                <span className="text-blue-700">Token Price:</span>
+                <span className="font-semibold ml-2">{property.tokenPrice}</span>
               </div>
               <div>
-                <span className="text-blue-600">Expected Return:</span>
-                <p className="font-semibold text-green-600">{property.expectedReturn}</p>
+                <span className="text-blue-700">Expected Return:</span>
+                <span className="font-semibold ml-2">{property.expectedReturn}</span>
               </div>
               <div>
-                <span className="text-blue-600">Available Tokens:</span>
-                <p className="font-semibold">{property.availableTokens}</p>
+                <span className="text-blue-700">Available Tokens:</span>
+                <span className="font-semibold ml-2">{property.availableTokens}</span>
               </div>
               <div>
-                <span className="text-blue-600">Total Tokens:</span>
-                <p className="font-semibold">{property.totalTokens}</p>
+                <span className="text-blue-700">Property Value:</span>
+                <span className="font-semibold ml-2">{property.price}</span>
               </div>
             </div>
           </div>
 
-          {/* Investment Amount */}
-          <div>
-            <Label htmlFor="tokens" className="flex items-center gap-2">
-              <Calculator className="h-4 w-4" />
-              Number of Tokens
-            </Label>
-            <Input
-              id="tokens"
-              type="number"
-              placeholder="Enter number of tokens"
-              value={tokenAmount}
-              onChange={(e) => setTokenAmount(e.target.value)}
-              className="mt-1"
-              min="1"
-              max={parseInt(property.availableTokens.replace(',', ''))}
-            />
-            
-            {tokenAmount && (
-              <div className="mt-3 p-3 bg-gray-50 rounded-lg">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-gray-600">Investment Amount:</span>
-                    <p className="font-semibold text-lg">₹{investmentAmount.toLocaleString()}</p>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Est. Annual Return:</span>
-                    <p className="font-semibold text-lg text-green-600">₹{estimatedReturn.toLocaleString()}</p>
-                  </div>
+          {/* Investment Calculator */}
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="amount" className="flex items-center gap-2">
+                <Calculator className="h-4 w-4" />
+                Investment Amount (₹)
+              </Label>
+              <Input
+                id="amount"
+                type="number"
+                placeholder="Enter amount to invest"
+                value={investmentAmount}
+                onChange={(e) => handleAmountChange(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="tokens" className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" />
+                Number of Tokens
+              </Label>
+              <Input
+                id="tokens"
+                type="number"
+                placeholder="Number of tokens"
+                value={selectedTokens}
+                onChange={(e) => handleTokenChange(parseInt(e.target.value) || 0)}
+                max={maxTokens}
+                className="mt-1"
+              />
+            </div>
+          </div>
+
+          {/* Investment Summary */}
+          {selectedTokens > 0 && (
+            <div className="bg-green-50 rounded-lg p-4">
+              <h4 className="font-semibold text-green-900 mb-3 flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                Investment Summary
+              </h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span>Tokens to purchase:</span>
+                  <span className="font-semibold">{selectedTokens}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Total investment:</span>
+                  <span className="font-semibold">₹{investmentAmount}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Ownership percentage:</span>
+                  <span className="font-semibold">{((selectedTokens / parseInt(property.availableTokens.replace(',', ''))) * 100).toFixed(2)}%</span>
+                </div>
+                <div className="flex justify-between text-green-800">
+                  <span>Expected annual return:</span>
+                  <span className="font-semibold">{property.expectedReturn}</span>
                 </div>
               </div>
-            )}
-          </div>
-
-          {/* Payment Method */}
-          <div>
-            <Label className="flex items-center gap-2 mb-3">
-              <CreditCard className="h-4 w-4" />
-              Payment Method
-            </Label>
-            <div className="grid grid-cols-2 gap-3">
-              <Button
-                variant={paymentMethod === 'wallet' ? 'default' : 'outline'}
-                onClick={() => setPaymentMethod('wallet')}
-                className="h-auto p-3 flex flex-col gap-2"
-              >
-                <Wallet className="h-5 w-5" />
-                <span className="text-sm">Crypto Wallet</span>
-              </Button>
-              <Button
-                variant={paymentMethod === 'card' ? 'default' : 'outline'}
-                onClick={() => setPaymentMethod('card')}
-                className="h-auto p-3 flex flex-col gap-2"
-              >
-                <CreditCard className="h-5 w-5" />
-                <span className="text-sm">Credit/Debit Card</span>
-              </Button>
             </div>
-          </div>
-
-          {/* Legal Notice */}
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-            <div className="flex items-start gap-2">
-              <Shield className="h-4 w-4 text-yellow-600 mt-0.5" />
-              <div className="text-sm text-yellow-800">
-                <p className="font-medium mb-1">Important Legal Notice:</p>
-                <p>This investment is subject to market risks. Please read all legal documents carefully before investing.</p>
-              </div>
-            </div>
-          </div>
+          )}
 
           {/* Action Buttons */}
           <div className="flex gap-3 pt-4">
-            <Button
+            <Button 
               onClick={handleInvest}
-              disabled={!tokenAmount || isProcessing}
-              className="flex-1 bg-gradient-to-r from-green-600 to-blue-600"
+              disabled={selectedTokens === 0 || isProcessing}
+              className="flex-1 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
             >
-              {isProcessing ? 'Processing...' : `Invest ₹${investmentAmount.toLocaleString()}`}
+              {isProcessing ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <CreditCard className="h-4 w-4 mr-2" />
+                  Invest Now
+                </>
+              )}
             </Button>
-            <Button variant="outline" onClick={onClose} className="flex-1">
+            <Button variant="outline" onClick={onClose} disabled={isProcessing}>
               Cancel
             </Button>
+          </div>
+
+          {/* Security Notice */}
+          <div className="text-center text-xs text-gray-500 pt-4 border-t">
+            <p className="flex items-center justify-center gap-1">
+              <Shield className="h-3 w-3" />
+              Your investment is secured by blockchain technology
+            </p>
           </div>
         </div>
       </DialogContent>

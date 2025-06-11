@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -17,9 +18,21 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({ isOpen, onClose
     console.log(`Connecting to ${walletType}...`);
     
     try {
-      // Simulate connection process
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log(`Connected to ${walletType} successfully`);
+      if (walletType === 'MetaMask') {
+        // Check if MetaMask is installed
+        if (typeof window.ethereum !== 'undefined') {
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          console.log('MetaMask connected successfully');
+        } else {
+          window.open('https://metamask.io/download/', '_blank');
+          throw new Error('MetaMask not installed');
+        }
+      } else {
+        // Simulate connection for other wallets
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        console.log(`Connected to ${walletType} successfully`);
+      }
+      
       onConnected?.();
       onClose();
     } catch (error) {
@@ -34,9 +47,29 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({ isOpen, onClose
     console.log(`Logging in with ${provider}...`);
     
     try {
-      // Simulate social login process
+      // Real social media authentication URLs
+      const authUrls = {
+        'Gmail': 'https://accounts.google.com/oauth/authorize?client_id=YOUR_GOOGLE_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&scope=email%20profile&response_type=code',
+        'Facebook': 'https://www.facebook.com/v18.0/dialog/oauth?client_id=YOUR_FACEBOOK_APP_ID&redirect_uri=YOUR_REDIRECT_URI&scope=email',
+        'Twitter': 'https://twitter.com/i/oauth2/authorize?response_type=code&client_id=YOUR_TWITTER_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&scope=tweet.read%20users.read',
+        'Discord': 'https://discord.com/api/oauth2/authorize?client_id=YOUR_DISCORD_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=identify%20email',
+        'Apple ID': 'https://appleid.apple.com/auth/authorize?client_id=YOUR_APPLE_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code',
+        'Instagram': 'https://api.instagram.com/oauth/authorize?client_id=YOUR_INSTAGRAM_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&scope=user_profile&response_type=code'
+      };
+
+      // For demo purposes, simulate the authentication
+      // In a real app, you would redirect to the actual OAuth URL
       await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log(`Logged in with ${provider} successfully`);
+      
+      // Simulate successful authentication
+      const userData = {
+        provider,
+        name: `User from ${provider}`,
+        email: `user@${provider.toLowerCase()}.com`,
+        avatar: ''
+      };
+      
+      console.log(`Logged in with ${provider} successfully`, userData);
       onConnected?.();
       onClose();
     } catch (error) {

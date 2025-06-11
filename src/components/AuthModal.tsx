@@ -16,6 +16,7 @@ interface AuthModalProps {
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -26,28 +27,54 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    setError(''); // Clear error when user types
+  };
+
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validatePassword = (password: string) => {
+    return password.length >= 6;
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
     
     try {
+      if (!validateEmail(formData.email)) {
+        throw new Error('Please enter a valid email address');
+      }
+      
+      if (!validatePassword(formData.password)) {
+        throw new Error('Password must be at least 6 characters long');
+      }
+
       // Simulate login API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
+      // Simulate successful login
       const userData = {
         name: formData.fullName || 'User',
         email: formData.email,
         phone: formData.phone || '+91 98765 43210',
         avatar: '',
-        verified: true
+        verified: true,
+        authMethod: 'email'
       };
       
+      // Store authentication state
+      localStorage.setItem('authToken', 'demo_token_' + Date.now());
+      localStorage.setItem('userData', JSON.stringify(userData));
+      
+      console.log('Login successful:', userData);
       onAuthenticated(userData);
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login failed:', error);
+      setError(error.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -55,14 +82,30 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
-      return;
-    }
-    
     setIsLoading(true);
+    setError('');
     
     try {
+      if (!formData.fullName.trim()) {
+        throw new Error('Please enter your full name');
+      }
+      
+      if (!validateEmail(formData.email)) {
+        throw new Error('Please enter a valid email address');
+      }
+      
+      if (!formData.phone.trim()) {
+        throw new Error('Please enter your phone number');
+      }
+      
+      if (!validatePassword(formData.password)) {
+        throw new Error('Password must be at least 6 characters long');
+      }
+      
+      if (formData.password !== formData.confirmPassword) {
+        throw new Error('Passwords do not match');
+      }
+      
       // Simulate signup API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       
@@ -71,16 +114,33 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
         email: formData.email,
         phone: formData.phone,
         avatar: '',
-        verified: false
+        verified: false,
+        authMethod: 'email'
       };
       
+      // Store authentication state
+      localStorage.setItem('authToken', 'demo_token_' + Date.now());
+      localStorage.setItem('userData', JSON.stringify(userData));
+      
+      console.log('Signup successful:', userData);
       onAuthenticated(userData);
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Signup failed:', error);
+      setError(error.message || 'Signup failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleForgotPassword = () => {
+    if (!formData.email) {
+      setError('Please enter your email address first');
+      return;
+    }
+    
+    // Simulate forgot password
+    alert(`Password reset link sent to ${formData.email}`);
   };
 
   return (
@@ -147,6 +207,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
                 </div>
               </div>
 
+              {error && (
+                <div className="text-red-600 text-sm bg-red-50 p-2 rounded">
+                  {error}
+                </div>
+              )}
+
               <Button 
                 type="submit" 
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600"
@@ -157,7 +223,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
             </form>
 
             <div className="text-center">
-              <Button variant="link" className="text-sm">
+              <Button 
+                variant="link" 
+                className="text-sm"
+                onClick={handleForgotPassword}
+                type="button"
+              >
                 Forgot your password?
               </Button>
             </div>
@@ -253,6 +324,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
                   className="mt-1"
                 />
               </div>
+
+              {error && (
+                <div className="text-red-600 text-sm bg-red-50 p-2 rounded">
+                  {error}
+                </div>
+              )}
 
               <Button 
                 type="submit" 

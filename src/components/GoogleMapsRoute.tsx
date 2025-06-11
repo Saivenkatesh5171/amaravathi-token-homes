@@ -1,9 +1,10 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Navigation, Route, Car, Clock, Ruler } from 'lucide-react';
+import { MapPin, Navigation, Route, Car, Clock, Ruler, Locate } from 'lucide-react';
 
 interface GoogleMapsRouteProps {
   propertyLocation: {
@@ -18,16 +19,34 @@ const GoogleMapsRoute: React.FC<GoogleMapsRouteProps> = ({ propertyLocation }) =
   const [routeData, setRouteData] = useState<any>(null);
   const [isCalculating, setIsCalculating] = useState(false);
 
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation(`${latitude},${longitude}`);
+          console.log('Current location:', latitude, longitude);
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          alert('Unable to get your current location. Please enter manually.');
+        }
+      );
+    } else {
+      alert('Geolocation is not supported by this browser.');
+    }
+  };
+
   const calculateRoute = async () => {
     if (!userLocation.trim()) return;
     
     setIsCalculating(true);
     
     try {
-      // Simulate route calculation
+      // Simulate route calculation with real-looking data
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Mock route data
+      // Mock route data with realistic values
       setRouteData({
         distance: '12.5 km',
         duration: '25 mins',
@@ -53,6 +72,16 @@ const GoogleMapsRoute: React.FC<GoogleMapsRouteProps> = ({ propertyLocation }) =
     window.open(url, '_blank');
   };
 
+  const openGoogleMapsEmbedded = () => {
+    const destination = encodeURIComponent(propertyLocation.address);
+    const origin = encodeURIComponent(userLocation);
+    const embedUrl = `https://www.google.com/maps/embed/v1/directions?key=YOUR_API_KEY&origin=${origin}&destination=${destination}&mode=driving`;
+    
+    // For demonstration, open in new tab with regular Google Maps
+    const url = `https://www.google.com/maps/dir/${encodeURIComponent(userLocation)}/${encodeURIComponent(propertyLocation.address)}`;
+    window.open(url, '_blank');
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -69,6 +98,9 @@ const GoogleMapsRoute: React.FC<GoogleMapsRouteProps> = ({ propertyLocation }) =
             <span className="font-medium">Property Location</span>
           </div>
           <p className="text-blue-900 text-sm">{propertyLocation.address}</p>
+          <p className="text-blue-700 text-xs mt-1">
+            Coordinates: {propertyLocation.lat}, {propertyLocation.lng}
+          </p>
         </div>
 
         {/* User Location Input */}
@@ -82,11 +114,31 @@ const GoogleMapsRoute: React.FC<GoogleMapsRouteProps> = ({ propertyLocation }) =
               className="flex-1"
             />
             <Button 
+              onClick={getCurrentLocation}
+              variant="outline"
+              size="sm"
+              className="px-3"
+              title="Use current location"
+            >
+              <Locate className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className="flex gap-2">
+            <Button 
               onClick={calculateRoute}
               disabled={!userLocation.trim() || isCalculating}
-              className="px-6"
+              className="flex-1"
             >
               {isCalculating ? 'Calculating...' : 'Get Route'}
+            </Button>
+            <Button 
+              onClick={openGoogleMapsEmbedded}
+              disabled={!userLocation.trim()}
+              variant="outline"
+              className="flex-1"
+            >
+              <Navigation className="h-4 w-4 mr-2" />
+              Open Maps
             </Button>
           </div>
         </div>
@@ -98,7 +150,7 @@ const GoogleMapsRoute: React.FC<GoogleMapsRouteProps> = ({ propertyLocation }) =
             <div className="border rounded-lg p-4 bg-green-50">
               <div className="flex items-center justify-between mb-3">
                 <h4 className="font-medium text-green-900">Recommended Route</h4>
-                <Badge className="bg-green-600">{routeData.traffic} traffic</Badge>
+                <Badge className="bg-green-600">{routeData.traffic}</Badge>
               </div>
               
               <div className="grid grid-cols-3 gap-4 mb-3">
@@ -149,6 +201,24 @@ const GoogleMapsRoute: React.FC<GoogleMapsRouteProps> = ({ propertyLocation }) =
             </div>
           </div>
         )}
+
+        {/* Interactive Map Embed */}
+        <div className="border rounded-lg overflow-hidden">
+          <div className="bg-gray-100 h-48 flex items-center justify-center relative">
+            <div className="text-center">
+              <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+              <p className="text-gray-500 font-medium">Interactive Map</p>
+              <p className="text-xs text-gray-400">Click "Open Maps" for navigation</p>
+            </div>
+            <Button 
+              onClick={openGoogleMapsEmbedded}
+              className="absolute bottom-3 right-3"
+              size="sm"
+            >
+              View Full Map
+            </Button>
+          </div>
+        </div>
 
         {/* Nearby Transportation */}
         <div className="border-t pt-4">
