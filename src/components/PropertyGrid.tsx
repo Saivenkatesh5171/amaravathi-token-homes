@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -17,8 +18,11 @@ import {
   Filter,
   Search,
   Shield,
-  Flame,
-  Award
+  Zap,
+  Award,
+  Heart,
+  Share2,
+  Clock
 } from 'lucide-react';
 import InvestmentModal from './InvestmentModal';
 

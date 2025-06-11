@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Navigation, Route, Car, Clock, Distance } from 'lucide-react';
+import { MapPin, Navigation, Route, Car, Clock, Ruler } from 'lucide-react';
 
 interface GoogleMapsRouteProps {
   propertyLocation: {
@@ -104,7 +103,7 @@ const GoogleMapsRoute: React.FC<GoogleMapsRouteProps> = ({ propertyLocation }) =
               
               <div className="grid grid-cols-3 gap-4 mb-3">
                 <div className="text-center">
-                  <Distance className="h-5 w-5 mx-auto text-green-600 mb-1" />
+                  <Ruler className="h-5 w-5 mx-auto text-green-600 mb-1" />
                   <p className="text-lg font-semibold text-green-900">{routeData.distance}</p>
                   <p className="text-xs text-green-700">Distance</p>
                 </div>
