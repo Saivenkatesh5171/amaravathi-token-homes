@@ -14,11 +14,11 @@ import Navigation from '@/components/Navigation';
 const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 relative">
-      {/* Real Estate Wallpaper Background */}
+      {/* Buddha Statue Wallpaper Background */}
       <div 
-        className="absolute inset-0 opacity-10 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 opacity-20 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1460574283810-2aab119d8511?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')`
+          backgroundImage: `url('/lovable-uploads/a1f1537d-1f96-4f39-bc37-29f7b6687cc5.png')`
         }}
       />
       
