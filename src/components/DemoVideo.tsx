@@ -6,9 +6,7 @@ import { Play, Pause, Volume2, Maximize, X } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 const DemoVideo = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [currentScene, setCurrentScene] = useState(0);
 
   const videoScenes = [
     {
@@ -49,18 +47,12 @@ const DemoVideo = () => {
     }
   ];
 
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-  };
-
   const openFullscreen = () => {
     setIsFullscreen(true);
   };
 
   const closeFullscreen = () => {
     setIsFullscreen(false);
-    setIsPlaying(false);
-    setCurrentScene(0);
   };
 
   return (
@@ -80,39 +72,16 @@ const DemoVideo = () => {
           <Card className="max-w-4xl mx-auto overflow-hidden shadow-2xl">
             <CardContent className="p-0">
               <div className="relative aspect-video bg-gradient-to-br from-blue-900 to-purple-900">
-                {/* Video Thumbnail */}
-                <div 
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80"
-                  style={{
-                    backgroundImage: `url('https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80')`
-                  }}
+                {/* YouTube Video Embed */}
+                <iframe
+                  src="https://www.youtube.com/embed/UbYleYe876c"
+                  title="Real Estate Tokenization in Amaravati Demo"
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
                 />
-                
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/50" />
-                
-                {/* Play Button */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Button
-                    onClick={openFullscreen}
-                    size="lg"
-                    className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white/30 rounded-full p-6 transition-all duration-300 transform hover:scale-110"
-                  >
-                    <Play className="h-8 w-8 ml-1" />
-                  </Button>
-                </div>
 
-                {/* Video Info Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
-                  <h3 className="text-white text-xl font-semibold mb-2">
-                    🎯 Real Estate Tokenization Demo - Amaravati, Andhra Pradesh
-                  </h3>
-                  <p className="text-white/90 text-sm">
-                    Duration: 2:00 • Showcasing blockchain-powered property investment in Amaravati
-                  </p>
-                </div>
-
-                {/* Video Controls */}
+                {/* Video Controls Overlay */}
                 <div className="absolute top-4 right-4 flex gap-2">
                   <Button
                     variant="secondary"
@@ -166,91 +135,14 @@ const DemoVideo = () => {
               <X className="h-5 w-5" />
             </button>
 
-            {/* Video Player */}
-            <div className="relative w-full h-full">
-              <div 
-                className="w-full h-full bg-cover bg-center bg-no-repeat"
-                style={{
-                  backgroundImage: `url('https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80')`
-                }}
-              />
-              
-              {/* Video Content Overlay */}
-              <div className="absolute inset-0 bg-black/70 flex flex-col">
-                {/* Current Scene Display */}
-                <div className="flex-1 flex items-center justify-center p-8">
-                  <div className="text-center text-white max-w-4xl">
-                    {!isPlaying ? (
-                      <div>
-                        <Button
-                          onClick={handlePlayPause}
-                          size="lg"
-                          className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white/30 rounded-full p-8 mb-6"
-                        >
-                          <Play className="h-12 w-12 ml-1" />
-                        </Button>
-                        <h3 className="text-3xl font-bold mb-4">🎬 Real Estate Tokenization Demo</h3>
-                        <p className="text-xl text-white/80 mb-4">Amaravati, Andhra Pradesh</p>
-                        <p className="text-white/60">Click to start the demo presentation</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-6">
-                        <div className="flex justify-center mb-6">
-                          <Button
-                            onClick={handlePlayPause}
-                            size="lg"
-                            className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white/30 rounded-full p-4"
-                          >
-                            <Pause className="h-8 w-8" />
-                          </Button>
-                        </div>
-                        
-                        <div className="bg-black/50 rounded-lg p-6">
-                          <h4 className="text-2xl font-bold mb-3">
-                            🔹 Scene {currentScene + 1}: {videoScenes[currentScene].title}
-                          </h4>
-                          <p className="text-lg text-white/90 mb-4">
-                            {videoScenes[currentScene].narration}
-                          </p>
-                          <p className="text-sm text-white/70">
-                            📝 {videoScenes[currentScene].description}
-                          </p>
-                        </div>
-
-                        {/* Scene Navigation */}
-                        <div className="flex justify-center gap-2 mt-6">
-                          {videoScenes.map((_, index) => (
-                            <button
-                              key={index}
-                              onClick={() => setCurrentScene(index)}
-                              className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                                index === currentScene ? 'bg-white' : 'bg-white/30'
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Video Progress Bar */}
-                {isPlaying && (
-                  <div className="p-6">
-                    <div className="bg-white/20 rounded-full h-2 mb-2">
-                      <div 
-                        className="bg-red-500 h-full rounded-full transition-all duration-1000"
-                        style={{ width: `${((currentScene + 1) / videoScenes.length) * 100}%` }}
-                      ></div>
-                    </div>
-                    <div className="flex justify-between text-white text-sm">
-                      <span>{videoScenes[currentScene].time.split('-')[0]}</span>
-                      <span>2:00</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+            {/* Fullscreen YouTube Video */}
+            <iframe
+              src="https://www.youtube.com/embed/UbYleYe876c?autoplay=1"
+              title="Real Estate Tokenization in Amaravati Demo - Fullscreen"
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
           </div>
         </DialogContent>
       </Dialog>
