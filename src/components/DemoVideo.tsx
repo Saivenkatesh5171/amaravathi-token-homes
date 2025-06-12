@@ -2,50 +2,11 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Play, Pause, Volume2, Maximize, X } from 'lucide-react';
+import { Volume2, Maximize, X } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 const DemoVideo = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
-
-  const videoScenes = [
-    {
-      time: "0:00-0:20",
-      title: "Introduction to Amaravati",
-      description: "Aerial view of Amaravati's skyline, highlighting its development",
-      narration: "Welcome to Amaravati, the emerging capital of Andhra Pradesh, where innovation meets opportunity in the real estate sector."
-    },
-    {
-      time: "0:20-0:40", 
-      title: "Understanding Real Estate Tokenization",
-      description: "Animation illustrating the conversion of physical property into digital tokens",
-      narration: "Real estate tokenization involves converting physical properties into digital tokens on a blockchain, enabling fractional ownership and enhanced liquidity."
-    },
-    {
-      time: "0:40-1:00",
-      title: "Blockchain Integration in Land Transactions", 
-      description: "Graphics showing blockchain securing land records",
-      narration: "Blockchain technology secures land records, ensuring transparency and reducing the risk of fraud in property transactions."
-    },
-    {
-      time: "1:00-1:20",
-      title: "Government Initiatives and Infrastructure Development",
-      description: "Footage of ongoing infrastructure projects in Amaravati", 
-      narration: "The Andhra Pradesh government is accelerating development in Amaravati with significant investments in infrastructure, including roads, drainage systems, and public services."
-    },
-    {
-      time: "1:20-1:40",
-      title: "Real Estate Revival and Investment Opportunities",
-      description: "Before-and-after images of property developments and active construction sites",
-      narration: "With renewed political clarity and infrastructure progress, Amaravati's real estate market is witnessing a resurgence, attracting investors and developers alike."
-    },
-    {
-      time: "1:40-2:00", 
-      title: "Conclusion and Call to Action",
-      description: "Digital representation of a tokenized property portfolio",
-      narration: "Embrace the future of real estate investment in Amaravati through tokenization. Join us in shaping the city's smart, transparent, and accessible real estate market."
-    }
-  ];
 
   const openFullscreen = () => {
     setIsFullscreen(true);
@@ -102,24 +63,6 @@ const DemoVideo = () => {
               </div>
             </CardContent>
           </Card>
-
-          {/* Video Scenes Preview */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-            {videoScenes.map((scene, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow duration-300">
-                <CardContent className="p-6">
-                  <div className="text-center">
-                    <div className="bg-blue-100 rounded-full p-3 w-12 h-12 mx-auto mb-4 flex items-center justify-center">
-                      <span className="text-blue-600 font-bold text-sm">{index + 1}</span>
-                    </div>
-                    <h4 className="font-semibold text-gray-900 mb-2 text-sm">{scene.title}</h4>
-                    <p className="text-gray-600 text-xs mb-2">{scene.time}</p>
-                    <p className="text-gray-500 text-xs">{scene.description}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
         </div>
       </section>
 
