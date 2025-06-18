@@ -30,6 +30,7 @@ const PropertyDetail = () => {
   const { id } = useParams();
   const [selectedDates, setSelectedDates] = useState<Date | undefined>(new Date());
   const [tokenAmount, setTokenAmount] = useState('');
+  const [showInvestmentModal, setShowInvestmentModal] = useState(false);
 
   // Mock property data - in real app, this would come from API
   const property = {
@@ -208,7 +209,10 @@ const PropertyDetail = () => {
                         </div>
                       </div>
 
-                      <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                      <Button 
+                        onClick={() => setShowInvestmentModal(true)}
+                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                      >
                         Invest Now
                       </Button>
                     </div>
@@ -346,6 +350,13 @@ const PropertyDetail = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Investment Modal */}
+      <InvestmentModal
+        isOpen={showInvestmentModal}
+        onClose={() => setShowInvestmentModal(false)}
+        property={property}
+      />
     </div>
   );
 };

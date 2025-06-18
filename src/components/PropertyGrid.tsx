@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,11 +6,14 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, TrendingUp, Users, Zap, Heart, Share2, Clock, Map } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import GoogleMapsRoute from './GoogleMapsRoute';
+import InvestmentModal from './InvestmentModal';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const PropertyGrid = () => {
   const [selectedProperty, setSelectedProperty] = useState<any>(null);
   const [showMapModal, setShowMapModal] = useState(false);
+  const [showInvestmentModal, setShowInvestmentModal] = useState(false);
+  const [investmentProperty, setInvestmentProperty] = useState<any>(null);
   const navigate = useNavigate();
 
   // Property type specific images
@@ -279,7 +283,8 @@ const PropertyGrid = () => {
   const allProperties = [...properties, ...generateMoreProperties()];
 
   const handleStartInvesting = (property: any) => {
-    navigate('/properties');
+    setInvestmentProperty(property);
+    setShowInvestmentModal(true);
   };
 
   const handleShowRoute = (property: any) => {
@@ -427,6 +432,18 @@ const PropertyGrid = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Investment Modal */}
+      {investmentProperty && (
+        <InvestmentModal
+          isOpen={showInvestmentModal}
+          onClose={() => {
+            setShowInvestmentModal(false);
+            setInvestmentProperty(null);
+          }}
+          property={investmentProperty}
+        />
+      )}
     </>
   );
 };
