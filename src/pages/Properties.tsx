@@ -52,17 +52,19 @@ const Properties = () => {
                   />
                 </div>
 
-                {/* Category Filter */}
+                {/* Property Type Filter */}
                 <Select value={filterCategory} onValueChange={setFilterCategory}>
                   <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Category" />
+                    <SelectValue placeholder="Property Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    <SelectItem value="residential">Residential</SelectItem>
+                    <SelectItem value="all">All Property Types</SelectItem>
+                    <SelectItem value="single-family">Single Family</SelectItem>
+                    <SelectItem value="multi-family">Multi Family</SelectItem>
                     <SelectItem value="commercial">Commercial</SelectItem>
-                    <SelectItem value="mixed">Mixed Use</SelectItem>
-                    <SelectItem value="industrial">Industrial</SelectItem>
+                    <SelectItem value="townhouse">Townhouse</SelectItem>
+                    <SelectItem value="condo">Condo</SelectItem>
+                    <SelectItem value="mixed-use">Mixed Use</SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -77,6 +79,7 @@ const Properties = () => {
                     <SelectItem value="returns-high">Returns: High to Low</SelectItem>
                     <SelectItem value="newest">Newest First</SelectItem>
                     <SelectItem value="popularity">Most Popular</SelectItem>
+                    <SelectItem value="funding-high">Funding: High to Low</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -128,7 +131,7 @@ const Properties = () => {
                 <h3 className="font-semibold text-gray-900 mb-4">Advanced Filters</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Price Range (₹)</label>
                     <div className="flex gap-2">
                       <Input placeholder="Min" type="number" />
                       <Input placeholder="Max" type="number" />
@@ -141,23 +144,23 @@ const Properties = () => {
                         <SelectValue placeholder="Select ROI" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="5-10">5% - 10%</SelectItem>
                         <SelectItem value="10-15">10% - 15%</SelectItem>
                         <SelectItem value="15-20">15% - 20%</SelectItem>
-                        <SelectItem value="20+">20%+</SelectItem>
+                        <SelectItem value="20-25">20% - 25%</SelectItem>
+                        <SelectItem value="25+">25%+</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Completion Status</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Funding Status</label>
                     <Select>
                       <SelectTrigger>
                         <SelectValue placeholder="Status" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="completed">Completed</SelectItem>
-                        <SelectItem value="under-construction">Under Construction</SelectItem>
-                        <SelectItem value="pre-launch">Pre-Launch</SelectItem>
+                        <SelectItem value="low">Low Funding (0-50%)</SelectItem>
+                        <SelectItem value="medium">Medium Funding (50-80%)</SelectItem>
+                        <SelectItem value="high">High Funding (80%+)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -170,9 +173,10 @@ const Properties = () => {
                       <SelectContent>
                         <SelectItem value="capital-core">Capital Core</SelectItem>
                         <SelectItem value="seed-access">Seed Access Road</SelectItem>
-                        <SelectItem value="thullur">Thullur</SelectItem>
-                        <SelectItem value="mangalagiri">Mangalagiri</SelectItem>
-                        <SelectItem value="vijayawada-road">Vijayawada Road</SelectItem>
+                        <SelectItem value="thullur">Thullur IT Hub</SelectItem>
+                        <SelectItem value="mangalagiri">Mangalagiri Hills</SelectItem>
+                        <SelectItem value="vijayawada-road">Vijayawada Highway</SelectItem>
+                        <SelectItem value="government">Government Complex</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -183,7 +187,7 @@ const Properties = () => {
             {/* Active Filters */}
             <div className="flex gap-2 flex-wrap">
               <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                Amaravati
+                Amaravati Capital Region
                 <button className="ml-2 text-blue-600 hover:text-blue-800">×</button>
               </Badge>
               <Badge variant="secondary" className="bg-green-100 text-green-800">
@@ -191,7 +195,7 @@ const Properties = () => {
                 <button className="ml-2 text-green-600 hover:text-green-800">×</button>
               </Badge>
               <Badge variant="secondary" className="bg-purple-100 text-purple-800">
-                Commercial Properties
+                Mixed Property Types
                 <button className="ml-2 text-purple-600 hover:text-purple-800">×</button>
               </Badge>
             </div>
@@ -208,17 +212,15 @@ const Properties = () => {
             </h2>
             <div className="text-gray-600 flex items-center gap-2">
               <MapPin className="h-4 w-4" />
-              Showing results for Amaravati
+              Showing results for Amaravati Capital Region
             </div>
           </div>
 
           <PropertyGrid />
 
-          {/* Load More */}
+          {/* Load More - Hidden since we're showing all 48 */}
           <div className="text-center mt-12">
-            <Button variant="outline" size="lg" className="px-8">
-              Load More Properties
-            </Button>
+            <p className="text-gray-600">Showing all 48 available properties</p>
           </div>
         </div>
       </section>
