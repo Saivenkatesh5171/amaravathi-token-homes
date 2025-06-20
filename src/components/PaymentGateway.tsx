@@ -1,21 +1,22 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
 import { 
-  CreditCard, 
-  Smartphone, 
-  Bitcoin, 
-  Wallet, 
   Shield, 
   Check,
   ArrowRight,
   IndianRupee,
-  DollarSign
+  Bitcoin,
+  Wallet
 } from 'lucide-react';
+import { paymentMethods } from '@/utils/paymentMethods';
+import { processPayment } from '@/utils/paymentUtils';
+import PaymentMethodSelector from './PaymentMethodSelector';
+import UpiPaymentForm from './UpiPaymentForm';
+import CardPaymentForm from './CardPaymentForm';
+import CryptoPaymentList from './CryptoPaymentList';
 
 interface PaymentGatewayProps {
   isOpen: boolean;
@@ -35,83 +36,18 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({
   const [selectedPayment, setSelectedPayment] = useState('upi');
   const [isProcessing, setIsProcessing] = useState(false);
   const [upiId, setUpiId] = useState('');
-  const [cryptoAmount, setCryptoAmount] = useState({
-    btc: '0.00312',
-    eth: '0.0245',
-    usdt: '125.00'
-  });
-
-  const initiatePhonePePayment = async (upiId: string) => {
-    const merchantTransactionId = `TXN_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const amountInPaise = parseInt(amount.replace(/,/g, '')) * 100; // Convert to paise
-    
-    const phonepePayload = {
-      merchantId: "YOUR_MERCHANT_ID", // Replace with actual merchant ID
-      merchantTransactionId: merchantTransactionId,
-      amount: amountInPaise,
-      merchantUserId: `user_${Date.now()}`,
-      redirectUrl: `${window.location.origin}/payment-success`,
-      callbackUrl: `${window.location.origin}/phonepe-payment-status`,
-      paymentInstrument: {
-        type: "UPI_INTENT",
-        target: upiId
-      }
-    };
-
-    console.log('PhonePe Payment Payload:', phonepePayload);
-    console.log('API Endpoint: POST https://api.phonepe.com/apis/pg/v1/pay');
-    console.log('Headers Required: X-VERIFY (SHA256 payload with salt + salt index)');
-    
-    // Note: Actual API call would require proper backend implementation
-    // This is a demonstration of the payload structure
-    
-    return phonepePayload;
-  };
 
   const handlePayment = async (method: string) => {
     setIsProcessing(true);
-    console.log(`Processing payment via ${method} for ₹${amount}`);
     
     try {
-      if (method === 'upi' && upiId) {
-        // Validate UPI ID format
-        const upiRegex = /^[a-zA-Z0-9.\-_]+@[a-zA-Z0-9.-]+$/;
-        if (!upiRegex.test(upiId)) {
-          console.error('Invalid UPI ID format');
-          return;
-        }
-
-        // Initiate PhonePe payment
-        const paymentData = await initiatePhonePePayment(upiId);
-        console.log('Payment initiated with PhonePe:', paymentData);
-        
-        // In a real implementation, this would make an API call to your backend
-        // which would then call the PhonePe API with proper authentication
-      }
-      
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      console.log('Payment successful!');
+      await processPayment(method, upiId, amount);
       onClose();
     } catch (error) {
       console.error('Payment failed:', error);
     } finally {
       setIsProcessing(false);
     }
-  };
-
-  const paymentMethods = {
-    fiat: [
-      { id: 'upi', name: 'UPI', icon: Smartphone, desc: 'PhonePe, GPay, Paytm' },
-      { id: 'netbanking', name: 'Net Banking', icon: CreditCard, desc: 'All major banks' },
-      { id: 'card', name: 'Credit/Debit Card', icon: CreditCard, desc: 'Visa, Mastercard, RuPay' },
-      { id: 'neft', name: 'NEFT/RTGS', icon: IndianRupee, desc: 'Bank transfer' }
-    ],
-    crypto: [
-      { id: 'btc', name: 'Bitcoin', symbol: 'BTC', amount: cryptoAmount.btc, icon: Bitcoin },
-      { id: 'eth', name: 'Ethereum', symbol: 'ETH', amount: cryptoAmount.eth, icon: Wallet },
-      { id: 'usdt', name: 'Tether USD', symbol: 'USDT', amount: cryptoAmount.usdt, icon: DollarSign }
-    ]
   };
 
   return (
@@ -152,89 +88,28 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({
             </TabsList>
 
             <TabsContent value="fiat" className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                {paymentMethods.fiat.map((method) => {
-                  const IconComponent = method.icon;
-                  return (
-                    <Button
-                      key={method.id}
-                      variant={selectedPayment === method.id ? "default" : "outline"}
-                      className="h-20 flex flex-col gap-2"
-                      onClick={() => setSelectedPayment(method.id)}
-                    >
-                      <IconComponent className="h-6 w-6" />
-                      <div className="text-center">
-                        <div className="font-medium text-sm">{method.name}</div>
-                        <div className="text-xs text-gray-500">{method.desc}</div>
-                      </div>
-                    </Button>
-                  );
-                })}
-              </div>
+              <PaymentMethodSelector
+                methods={paymentMethods.fiat}
+                selectedPayment={selectedPayment}
+                onSelectPayment={setSelectedPayment}
+              />
 
               {selectedPayment === 'upi' && (
-                <div className="space-y-3">
-                  <Label>UPI ID</Label>
-                  <Input 
-                    placeholder="your-upi-id@bank (e.g., raj@okaxis)" 
-                    value={upiId}
-                    onChange={(e) => setUpiId(e.target.value)}
-                  />
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <div className="flex items-center gap-2 text-blue-800 mb-1">
-                      <Smartphone className="h-4 w-4" />
-                      <span className="font-medium">PhonePe Integration</span>
-                    </div>
-                    <p className="text-blue-700 text-sm">
-                      You'll receive a payment request notification on your UPI app for ₹{amount}
-                    </p>
-                  </div>
-                </div>
+                <UpiPaymentForm
+                  upiId={upiId}
+                  setUpiId={setUpiId}
+                  amount={amount}
+                />
               )}
 
-              {selectedPayment === 'card' && (
-                <div className="space-y-3">
-                  <div>
-                    <Label>Card Number</Label>
-                    <Input placeholder="1234 5678 9012 3456" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <Label>Expiry Date</Label>
-                      <Input placeholder="MM/YY" />
-                    </div>
-                    <div>
-                      <Label>CVV</Label>
-                      <Input placeholder="123" />
-                    </div>
-                  </div>
-                </div>
-              )}
+              {selectedPayment === 'card' && <CardPaymentForm />}
             </TabsContent>
 
             <TabsContent value="crypto" className="space-y-4">
-              <div className="space-y-3">
-                {paymentMethods.crypto.map((crypto) => {
-                  const IconComponent = crypto.icon;
-                  return (
-                    <div key={crypto.id} className="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <IconComponent className="h-8 w-8" />
-                          <div>
-                            <div className="font-medium">{crypto.name}</div>
-                            <div className="text-sm text-gray-500">{crypto.symbol}</div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="font-semibold">{crypto.amount} {crypto.symbol}</div>
-                          <div className="text-sm text-gray-500">≈ ₹{amount}</div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              <CryptoPaymentList 
+                cryptoMethods={paymentMethods.crypto}
+                amount={amount}
+              />
 
               <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
                 <div className="flex items-center gap-2 text-orange-800">
