@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,11 +23,11 @@ const Properties = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Tokenized Properties
+              Premium Tokenized Properties
             </h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Discover premium real estate opportunities in Amaravati. 
-              Invest in fractions of high-value properties with blockchain transparency.
+              Discover the finest real estate opportunities in Amaravati. 
+              Invest in carefully selected premium properties with blockchain transparency.
             </p>
           </div>
         </div>
@@ -208,19 +207,18 @@ const Properties = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900">
-              Available Properties (48)
+              Premium Properties (5)
             </h2>
             <div className="text-gray-600 flex items-center gap-2">
               <MapPin className="h-4 w-4" />
-              Showing results for Amaravati Capital Region
+              Showing premium properties in Amaravati Capital Region
             </div>
           </div>
 
           <PropertyGrid />
 
-          {/* Load More - Hidden since we're showing all 48 */}
           <div className="text-center mt-12">
-            <p className="text-gray-600">Showing all 48 available properties</p>
+            <p className="text-gray-600">Showing all 5 premium properties with advanced features</p>
           </div>
         </div>
       </section>

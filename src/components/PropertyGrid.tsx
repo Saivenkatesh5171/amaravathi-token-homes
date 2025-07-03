@@ -16,91 +16,8 @@ const PropertyGrid = () => {
   const [investmentProperty, setInvestmentProperty] = useState<any>(null);
   const navigate = useNavigate();
 
-  // Property type specific images
-  const getPropertyImage = (propertyType: string, id: number) => {
-    const singleFamilyImages = [
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1518005020951-eccb494ad742?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1459767129954-1b1c1f9b9ace?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1524230572899-a752b3835840?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1721322800607-8c38375eef04?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    ];
-    
-    const multiFamilyImages = [
-      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1527576539890-dfa815648363?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1488972685288-c3fd157d7c7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1433832597046-4f10e10ac764?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1551038247-3d9af20df552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    ];
-    
-    const commercialImages = [
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1496307653780-42ee777d4833?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1431576901776-e539bd916ba2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1460574283810-2aab119d8511?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    ];
-    
-    const townhouseImages = [
-      "https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1486718448742-163732cd1544?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1439337153520-7082a56a81f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1497604401993-f2e922e5cb0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1473177104440-ffee2f376098?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1494891848038-7bd202a2afeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    ];
-    
-    const condoImages = [
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1483058712412-4245e9b90334?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    ];
-    
-    const mixedUseImages = [
-      "https://images.unsplash.com/photo-1493397212122-2b85dda8106b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1492321936769-b49830bc1d1e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    ];
-
-    let imageArray;
-    switch (propertyType) {
-      case 'Single Family':
-        imageArray = singleFamilyImages;
-        break;
-      case 'Multi Family':
-        imageArray = multiFamilyImages;
-        break;
-      case 'Commercial':
-        imageArray = commercialImages;
-        break;
-      case 'Townhouse':
-        imageArray = townhouseImages;
-        break;
-      case 'Condo':
-        imageArray = condoImages;
-        break;
-      case 'Mixed Use':
-        imageArray = mixedUseImages;
-        break;
-      default:
-        imageArray = singleFamilyImages;
-    }
-    
-    return imageArray[(id - 1) % imageArray.length];
-  };
-
+  // Only the 5 best premium properties with all advanced features
   const properties = [
-    // Single Family Homes
     {
       id: 1,
       title: "Luxury Single Family Villa",
@@ -120,32 +37,13 @@ const PropertyGrid = () => {
       bedrooms: 4,
       bathrooms: 3,
       sqft: "2,800 sq ft",
-      coordinates: { lat: 16.5449, lng: 80.5100, address: "Capital City Phase 1, Amaravati" }
+      coordinates: { lat: 16.5449, lng: 80.5100, address: "Capital City Phase 1, Amaravati" },
+      features: ["Smart Home Technology", "Solar Panels", "Premium Finishes", "Garden & Pool"],
+      esgScore: 92,
+      amenities: ["Clubhouse", "Gym", "Swimming Pool", "Children's Play Area", "24/7 Security"]
     },
     {
       id: 2,
-      title: "Premium Single Family Home",
-      location: "Mangalagiri Hills - Sector 7",
-      image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      price: "₹95,00,000",
-      tokenPrice: "₹280",
-      totalTokens: "3,392",
-      availableTokens: "1,896",
-      expectedReturn: "16.8% p.a.",
-      funded: 44,
-      investors: 156,
-      timeLeft: "45 days",
-      roi: "+13.7%",
-      verified: true,
-      propertyType: "Single Family",
-      bedrooms: 3,
-      bathrooms: 2,
-      sqft: "2,200 sq ft",
-      coordinates: { lat: 16.4308, lng: 80.5090, address: "Mangalagiri Hills Sector 7" }
-    },
-    // Multi Family Properties
-    {
-      id: 3,
       title: "Multi Family Apartment Complex",
       location: "Vijayawada Highway Corridor",
       image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
@@ -163,7 +61,33 @@ const PropertyGrid = () => {
       units: 12,
       bedrooms: "2-3 BR Units",
       sqft: "1,200-1,800 sq ft",
-      coordinates: { lat: 16.5200, lng: 80.6200, address: "Vijayawada Highway Corridor" }
+      coordinates: { lat: 16.5200, lng: 80.6200, address: "Vijayawada Highway Corridor" },
+      features: ["Rental Guarantee", "Professional Management", "High Occupancy Area", "Metro Connectivity"],
+      esgScore: 88,
+      amenities: ["Rooftop Garden", "Community Hall", "Parking", "Power Backup", "Water Treatment"]
+    },
+    {
+      id: 3,
+      title: "Commercial Office Complex",
+      location: "Capital Region Business District",
+      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      price: "₹5,20,00,000",
+      tokenPrice: "₹750",
+      totalTokens: "6,933",
+      availableTokens: "2,450",
+      expectedReturn: "22.1% p.a.",
+      funded: 64,
+      investors: 189,
+      timeLeft: "42 days",
+      roi: "+18.9%",
+      verified: true,
+      propertyType: "Commercial",
+      floors: 8,
+      sqft: "45,000 sq ft",
+      coordinates: { lat: 16.5100, lng: 80.5400, address: "Business District, Amaravati" },
+      features: ["Grade A Office Space", "LEED Certified", "High-Speed Elevators", "Conference Centers"],
+      esgScore: 95,
+      amenities: ["Food Court", "ATM", "Parking", "24/7 Security", "Backup Power", "Fiber Internet"]
     },
     {
       id: 4,
@@ -184,103 +108,35 @@ const PropertyGrid = () => {
       units: 18,
       bedrooms: "1-4 BR Units",
       sqft: "800-2,400 sq ft",
-      coordinates: { lat: 16.4850, lng: 80.5150, address: "Thullur IT Hub Zone" }
+      coordinates: { lat: 16.4850, lng: 80.5150, address: "Thullur IT Hub Zone" },
+      features: ["IT Professional Hub", "Modern Architecture", "Green Building", "Tech Infrastructure"],
+      esgScore: 91,
+      amenities: ["Co-working Space", "Gym", "Spa", "Cafeteria", "Electric Vehicle Charging"]
     },
-    // Commercial Properties
     {
       id: 5,
-      title: "Commercial Office Complex",
-      location: "Capital Region Business District",
-      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      price: "₹5,20,00,000",
-      tokenPrice: "₹750",
-      totalTokens: "6,933",
-      availableTokens: "2,450",
-      expectedReturn: "22.1% p.a.",
-      funded: 64,
-      investors: 189,
-      timeLeft: "42 days",
-      roi: "+18.9%",
-      verified: true,
-      propertyType: "Commercial",
-      floors: 8,
-      sqft: "45,000 sq ft",
-      coordinates: { lat: 16.5100, lng: 80.5400, address: "Business District, Amaravati" }
-    },
-    {
-      id: 6,
-      title: "Retail Shopping Center",
-      location: "Amaravati Main Road",
-      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      title: "Premium Mixed-Use Development",
+      location: "Amaravati Government Complex Area",
+      image: "https://images.unsplash.com/photo-1493397212122-2b85dda8106b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       price: "₹4,80,00,000",
-      tokenPrice: "₹600",
-      totalTokens: "8,000",
-      availableTokens: "3,200",
-      expectedReturn: "20.5% p.a.",
-      funded: 60,
-      investors: 267,
-      timeLeft: "50 days",
-      roi: "+16.4%",
+      tokenPrice: "₹800",
+      totalTokens: "6,000",
+      availableTokens: "1,680",
+      expectedReturn: "20.8% p.a.",
+      funded: 72,
+      investors: 156,
+      timeLeft: "25 days",
+      roi: "+19.4%",
       verified: true,
-      propertyType: "Commercial",
-      stores: 24,
-      sqft: "35,000 sq ft",
-      coordinates: { lat: 16.5300, lng: 80.5250, address: "Main Road, Amaravati" }
+      propertyType: "Mixed Use",
+      floors: 12,
+      sqft: "65,000 sq ft",
+      coordinates: { lat: 16.5300, lng: 80.5250, address: "Government Complex Area, Amaravati" },
+      features: ["Retail + Residential", "Prime Location", "Government Proximity", "High Appreciation Potential"],
+      esgScore: 94,
+      amenities: ["Shopping Mall", "Restaurants", "Banking", "Medical Center", "Entertainment Zone"]
     }
   ];
-
-  // Generate additional properties to reach 48 total with proper images
-  const generateMoreProperties = () => {
-    const additionalProperties = [];
-    const locations = [
-      "Seed Access Road", "Government Complex Area", "Krishna River Front", "Buddha Park vicinity",
-      "International Convention Center", "State Assembly vicinity", "High Court Complex area",
-      "Medical College Campus", "University Township", "Eco City Phase 2", "Green City Sector",
-      "Smart City Block A", "Tech Park Zone", "Financial District", "Cultural Center area"
-    ];
-    
-    const propertyTypes = [
-      { type: "Single Family", priceRange: [80, 150], returnRange: [14, 17] },
-      { type: "Multi Family", priceRange: [200, 400], returnRange: [17, 20] },
-      { type: "Commercial", priceRange: [300, 600], returnRange: [19, 25] },
-      { type: "Townhouse", priceRange: [120, 200], returnRange: [15, 18] },
-      { type: "Condo", priceRange: [60, 120], returnRange: [13, 16] },
-      { type: "Mixed Use", priceRange: [250, 500], returnRange: [18, 22] }
-    ];
-
-    for (let i = 7; i <= 48; i++) {
-      const propertyTypeData = propertyTypes[Math.floor(Math.random() * propertyTypes.length)];
-      const location = locations[Math.floor(Math.random() * locations.length)];
-      const price = Math.floor(Math.random() * (propertyTypeData.priceRange[1] - propertyTypeData.priceRange[0]) + propertyTypeData.priceRange[0]);
-      const expectedReturn = Math.floor(Math.random() * (propertyTypeData.returnRange[1] - propertyTypeData.returnRange[0]) + propertyTypeData.returnRange[0]);
-      
-      additionalProperties.push({
-        id: i,
-        title: `${propertyTypeData.type} Property ${i}`,
-        location: `${location} - Amaravati`,
-        image: getPropertyImage(propertyTypeData.type, i),
-        price: `₹${price},00,000`,
-        tokenPrice: `₹${Math.floor(price / 100) * 10}`,
-        totalTokens: `${Math.floor(price * 10)}`,
-        availableTokens: `${Math.floor(price * 5)}`,
-        expectedReturn: `${expectedReturn}.${Math.floor(Math.random() * 9)}% p.a.`,
-        funded: Math.floor(Math.random() * 40) + 40,
-        investors: Math.floor(Math.random() * 200) + 50,
-        timeLeft: `${Math.floor(Math.random() * 60) + 20} days`,
-        roi: `+${Math.floor(Math.random() * 10) + 8}.${Math.floor(Math.random() * 9)}%`,
-        verified: Math.random() > 0.2,
-        propertyType: propertyTypeData.type,
-        coordinates: { 
-          lat: 16.5 + (Math.random() - 0.5) * 0.2, 
-          lng: 80.5 + (Math.random() - 0.5) * 0.2,
-          address: `${location}, Amaravati`
-        }
-      });
-    }
-    return additionalProperties;
-  };
-
-  const allProperties = [...properties, ...generateMoreProperties()];
 
   const handleStartInvesting = (property: any) => {
     setInvestmentProperty(property);
@@ -297,8 +153,6 @@ const PropertyGrid = () => {
       case 'Single Family': return 'bg-green-100 text-green-800';
       case 'Multi Family': return 'bg-blue-100 text-blue-800';
       case 'Commercial': return 'bg-purple-100 text-purple-800';
-      case 'Townhouse': return 'bg-orange-100 text-orange-800';
-      case 'Condo': return 'bg-pink-100 text-pink-800';
       case 'Mixed Use': return 'bg-yellow-100 text-yellow-800';
       default: return 'bg-gray-100 text-gray-800';
     }
@@ -306,8 +160,8 @@ const PropertyGrid = () => {
 
   return (
     <>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {allProperties.map((property) => (
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+        {properties.map((property) => (
           <Card key={property.id} className="group hover:shadow-xl transition-all duration-300 bg-white/95 backdrop-blur-sm border-0 shadow-lg">
             <div className="relative overflow-hidden">
               <img 
@@ -326,6 +180,9 @@ const PropertyGrid = () => {
                 </Badge>
                 <Badge className="bg-blue-600 text-white text-xs">
                   {property.roi}
+                </Badge>
+                <Badge className="bg-emerald-600 text-white text-xs">
+                  ESG: {property.esgScore}
                 </Badge>
               </div>
               <div className="absolute top-4 right-4 flex gap-2">
@@ -368,6 +225,18 @@ const PropertyGrid = () => {
                 <div>
                   <p className="text-gray-600">Available</p>
                   <p className="font-semibold">{property.availableTokens}</p>
+                </div>
+              </div>
+
+              {/* Key Features */}
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-gray-700">Key Features:</p>
+                <div className="flex flex-wrap gap-1">
+                  {property.features.slice(0, 3).map((feature, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs">
+                      {feature}
+                    </Badge>
+                  ))}
                 </div>
               </div>
               
