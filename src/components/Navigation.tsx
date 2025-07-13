@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, X, Home, TrendingUp, User, Wallet, Settings, LogOut } from 'lucide-react';
+import { Menu, X, Home, TrendingUp, User, Wallet, Settings, LogOut, Shield } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +15,8 @@ import WalletConnectModal from './WalletConnectModal';
 import ProfileModal from './ProfileModal';
 import AuthModal from './AuthModal';
 import LegalRightsModal from './LegalRightsModal';
+import KYCModal from './KYCModal';
+import KYCStatus from './KYCStatus';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,12 +25,34 @@ const Navigation = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showLegalModal, setShowLegalModal] = useState(false);
+  const [showKYCModal, setShowKYCModal] = useState(false);
   const [userProfile, setUserProfile] = useState({
     name: 'John Doe',
     email: 'john.doe@example.com',
     phone: '+91 98765 43210',
-    avatar: ''
+    avatar: '',
+    kycStatus: 'not_started' as 'not_started' | 'pending' | 'approved' | 'rejected'
   });
+
+  useEffect(() => {
+    // Check for existing authentication and KYC status
+    const authToken = localStorage.getItem('authToken');
+    const userData = localStorage.getItem('userData');
+    const kycData = localStorage.getItem('kycData');
+    
+    if (authToken && userData) {
+      const user = JSON.parse(userData);
+      let kycStatus = 'not_started';
+      
+      if (kycData) {
+        const kyc = JSON.parse(kycData);
+        kycStatus = kyc.kycStatus || 'not_started';
+      }
+      
+      setUserProfile(prev => ({ ...prev, ...user, kycStatus }));
+      setIsSignedIn(true);
+    }
+  }, []);
 
   const handleSignIn = () => {
     setShowAuthModal(true);
@@ -35,11 +60,14 @@ const Navigation = () => {
 
   const handleSignOut = () => {
     setIsSignedIn(false);
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userData');
     setUserProfile({
       name: 'John Doe',
       email: 'john.doe@example.com',
       phone: '+91 98765 43210',
-      avatar: ''
+      avatar: '',
+      kycStatus: 'not_started'
     });
   };
 
@@ -54,10 +82,33 @@ const Navigation = () => {
 
   const handleProfileUpdate = (updatedProfile: any) => {
     setUserProfile(updatedProfile);
+    localStorage.setItem('userData', JSON.stringify(updatedProfile));
   };
 
   const handleProfileClick = () => {
     setShowProfileModal(true);
+  };
+
+  const handleKYCClick = () => {
+    setShowKYCModal(true);
+  };
+
+  const handleKYCCompleted = (kycData: any) => {
+    setUserProfile(prev => ({ ...prev, kycStatus: kycData.kycStatus }));
+    const userData = { ...userProfile, kycStatus: kycData.kycStatus };
+    localStorage.setItem('userData', JSON.stringify(userData));
+  };
+
+  const handleAuthenticated = (userData: any) => {
+    setUserProfile(userData);
+    setIsSignedIn(true);
+    
+    // Show KYC modal for new users or if KYC is not completed
+    if (userData.kycStatus === 'not_started') {
+      setTimeout(() => {
+        setShowKYCModal(true);
+      }, 1000);
+    }
   };
 
   return (
@@ -124,45 +175,52 @@ const Navigation = () => {
                   Sign In
                 </Button>
               ) : (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="ghost"
-                      className="flex items-center space-x-2 hover:bg-gray-100"
-                    >
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={userProfile.avatar} alt="Profile" />
-                        <AvatarFallback>
-                          {userProfile.name.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="hidden lg:block">{userProfile.name}</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuItem onClick={handleProfileClick}>
-                      <User className="h-4 w-4 mr-2" />
-                      My Profile
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <TrendingUp className="h-4 w-4 mr-2" />
-                      My Investments
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Wallet className="h-4 w-4 mr-2" />
-                      Wallet
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Settings className="h-4 w-4 mr-2" />
-                      Settings
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut}>
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex items-center space-x-3">
+                  <KYCStatus status={userProfile.kycStatus} />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="ghost"
+                        className="flex items-center space-x-2 hover:bg-gray-100"
+                      >
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={userProfile.avatar} alt="Profile" />
+                          <AvatarFallback>
+                            {userProfile.name.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="hidden lg:block">{userProfile.name}</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem onClick={handleProfileClick}>
+                        <User className="h-4 w-4 mr-2" />
+                        My Profile
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleKYCClick}>
+                        <Shield className="h-4 w-4 mr-2" />
+                        KYC Verification
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <TrendingUp className="h-4 w-4 mr-2" />
+                        My Investments
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Wallet className="h-4 w-4 mr-2" />
+                        Wallet
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Settings className="h-4 w-4 mr-2" />
+                        Settings
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={handleSignOut}>
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Sign Out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               )}
             </div>
 
@@ -284,24 +342,19 @@ const Navigation = () => {
         </div>
       </nav>
 
-      {/* Wallet Connect Modal */}
+      {/* Modals */}
       <WalletConnectModal 
         isOpen={showWalletModal} 
         onClose={() => setShowWalletModal(false)}
         onConnected={handleWalletConnected}
       />
 
-      {/* Auth Modal */}
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
-        onAuthenticated={(userData) => {
-          setUserProfile(userData);
-          setIsSignedIn(true);
-        }}
+        onAuthenticated={handleAuthenticated}
       />
 
-      {/* Profile Modal */}
       <ProfileModal
         isOpen={showProfileModal}
         onClose={() => setShowProfileModal(false)}
@@ -309,10 +362,15 @@ const Navigation = () => {
         onUpdateProfile={handleProfileUpdate}
       />
 
-      {/* Legal Rights Modal */}
       <LegalRightsModal
         isOpen={showLegalModal}
         onClose={() => setShowLegalModal(false)}
+      />
+
+      <KYCModal
+        isOpen={showKYCModal}
+        onClose={() => setShowKYCModal(false)}
+        onKYCCompleted={handleKYCCompleted}
       />
     </>
   );

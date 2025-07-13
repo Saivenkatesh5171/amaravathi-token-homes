@@ -55,6 +55,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
       // Simulate login API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
+      // Check existing KYC status
+      const existingKYC = localStorage.getItem('kycData');
+      const kycStatus = existingKYC ? JSON.parse(existingKYC).kycStatus : 'not_started';
+      
       // Simulate successful login
       const userData = {
         name: formData.fullName || 'User',
@@ -62,7 +66,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
         phone: formData.phone || '+91 98765 43210',
         avatar: '',
         verified: true,
-        authMethod: 'email'
+        authMethod: 'email',
+        kycStatus: kycStatus
       };
       
       // Store authentication state
@@ -115,7 +120,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthenticated 
         phone: formData.phone,
         avatar: '',
         verified: false,
-        authMethod: 'email'
+        authMethod: 'email',
+        kycStatus: 'not_started'
       };
       
       // Store authentication state
